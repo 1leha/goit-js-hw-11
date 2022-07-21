@@ -1,2 +1,158 @@
 @import './common';
-@import './example';
+// @import './example';
+ul {
+  padding: 0;
+  margin: 0;
+}
+
+.header {
+  /* !удалить */
+  background-color: rgb(7, 0, 104);
+
+  padding: 10px;
+}
+
+.search-form {
+  display: flex;
+  justify-content: space-between;
+
+  width: 300px;
+
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.search-form > input {
+  flex: 1 1 auto;
+  padding: 5px;
+
+  border-top-left-radius: 5px;
+  border: none;
+  border-bottom-left-radius: 5px;
+  border: none;
+
+  &:focus {
+    border: none;
+    outline: none;
+  }
+}
+
+.search-form > button {
+  flex: 0 0 auto;
+  width: 32px;
+
+  padding: 5px;
+
+  background-color: rgb(255, 255, 255);
+
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border: none;
+
+  transition-property: background-color;
+  transition-duration: 300ms;
+  transition-timing-function: ease;
+
+  &:hover {
+    background-color: rgb(240, 240, 255);
+  }
+}
+
+.load-more {
+  min-width: 150px;
+  display: block;
+  margin: 20px auto;
+  padding: 5px;
+
+  border-radius: 5px;
+  background-color: rgb(240, 240, 255);
+
+  outline: solid 1px rgb(7, 0, 104);
+  border: none;
+
+  transition-property: background-color;
+  transition-duration: 300ms;
+  transition-timing-function: ease;
+
+  &:hover {
+    background-color: rgb(220, 220, 255);
+  }
+
+  &:disabled {
+    background-color: #eeeeee;
+    outline-color: #dbdbdb;
+  }
+}
+
+.gallery {
+  padding: 10px;
+  margin-top: 5px;
+}
+
+.gallery__container {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.gallery__item {
+  flex-basis: calc(25% - 12px);
+  min-width: 400px;
+  flex-grow: 0;
+
+  list-style: none;
+
+  outline: solid rgb(196, 196, 196) 1px;
+
+  border-radius: 10px;
+  overflow: hidden;
+  transition-property: box-shadow;
+  transition-duration: 300ms;
+  transition-timing-function: ease;
+
+  &:hover {
+    box-shadow: 0 0 15 #a3a3a3;
+  }
+}
+
+.gallery__link {
+  display: block;
+  width: 100%;
+  height: 300px;
+  overflow: hidden;
+  // object-fit: fill;
+}
+
+.gallery__image {
+  display: block;
+  width: 100%;
+  // height: 100%;
+
+  min-height: 320px;
+  object-fit: cover;
+  object-position: center;
+}
+
+.info {
+  padding-left: 20px;
+  padding-right: 20px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+.visible {
+  display: block;
+}
+
+.hidden {
+  display: none;
+}

@@ -5,7 +5,7 @@
   "homepage": "https://1leha.github.io/goit-js-hw-11",
   "scripts": {
     "start": "parcel src/*.html",
-   "build": "parcel build src/*.html --public-url /goit-js-hw-11/"
+    "build": "parcel build src/*.html --public-url /goit-js-hw-11/"
   },
   "repository": {
     "type": "git",
@@ -15,12 +15,14 @@
   "author": "Alexey Lisovoy <alexey.lisovoy2011@gmail.com>",
   "license": "ISC",
   "bugs": {
-   "url": "https://github.com/1leha/goit-js-hw-11.git/issues"
+    "url": "https://github.com/1leha/goit-js-hw-11.git/issues"
   },
   "dependencies": {
+    "bootstrap-icons": "^1.9.1",
     "flatpickr": "^4.6.13",
     "modern-normalize": "^1.1.0",
-    "notiflix": "^3.2.5"
+    "notiflix": "^3.2.5",
+    "simplelightbox": "^2.10.3"
   },
   "devDependencies": {
     "@parcel/transformer-sass": "^2.6.0",
