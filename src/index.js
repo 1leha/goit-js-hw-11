@@ -2,10 +2,10 @@ import './sass/index.scss';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import notiflix from 'notiflix';
-import ApiService from './js/AapiService';
-import NextButton from './js/NextButton';
-import cardTemplate from './js/cardTemplate';
-import SimpleLightbox from 'simplelightbox';
+import ApiService from './js/AapiService.js';
+import NextButton from './js/NextButton.js';
+import cardTemplate from './js/cardTemplate.js';
+import SimpleLightbox from 'simplelightbox.js';
 
 const searchOptions = {
   image_type: 'photo',
