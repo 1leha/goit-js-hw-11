@@ -5,7 +5,7 @@ import notiflix from 'notiflix';
 import ApiService from './js/AapiService.js';
 import NextButton from './js/NextButton.js';
 import cardTemplate from './js/cardTemplate.js';
-import SimpleLightbox from 'simplelightbox.js';
+import SimpleLightbox from 'simplelightbox';
 
 const searchOptions = {
   image_type: 'photo',
