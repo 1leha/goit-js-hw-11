@@ -1,7 +1,7 @@
 const BASE_URL = 'https://pixabay.com/api/';
 const PIXABAY_API_KEY = '28093475-fe65f3a9b90a4bdd7046cfe0a';
 
-export default class ApiService {
+export class ApiService {
   constructor(searchOptions = {}) {
     this.searchingImages = '';
     this.searchOptions = searchOptions;

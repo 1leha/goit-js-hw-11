@@ -2,9 +2,9 @@ import './sass/index.scss';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import notiflix from 'notiflix';
-import ApiService from './js/AapiService.js';
-import NextButton from './js/NextButton.js';
-import cardTemplate from './js/cardTemplate.js';
+import {ApiService} from './js/AapiService.js';
+import {NextButton} from './js/NextButton.js';
+import { cardTemplate } from './js/cardTemplate.js';
 import SimpleLightbox from 'simplelightbox';
 
 const searchOptions = {

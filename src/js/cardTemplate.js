@@ -1,4 +1,4 @@
-export default cardTemplate = ({
+export const cardTemplate = ({
   webformatURL,
   largeImageURL,
   tags,
