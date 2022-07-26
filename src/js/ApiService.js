@@ -1,5 +1,5 @@
-const BASE_URL = 'https://pixabay.com/api/';
-const PIXABAY_API_KEY = '28093475-fe65f3a9b90a4bdd7046cfe0a';
+import axios from 'axios';
+import { BASE_URL, PIXABAY_API_KEY } from './options.js';
 
 export class ApiService {
   constructor(searchOptions = {}) {
@@ -9,25 +9,35 @@ export class ApiService {
     this.totalHits = 0;
     this.imgPerPage = searchOptions.per_page;
     this.leftImages = 0;
+    this.searchURL = '';
   }
 
-  fetchImages() {
-    const searchOptions = new URLSearchParams(this.searchOptions);
+  get searchUrl() {
+    return this.searchURL;
+  }
+  set searchUrl(url) {
+    this.searchURL = url;
+  }
 
-    return fetch(
-      `${BASE_URL}?key=${PIXABAY_API_KEY}&q=${this.searchingImages}&${searchOptions}&page=${this.page}`
-    )
-      .then(request => {
-        if (request.ok) {
-          return request.json();
-        }
-      })
-      .then(data => {
-        this.getTotalHits(data);
-        this.leftImages = this.countLeftImiges();
-        this.incrememntPage();
-        return data;
-      });
+  async fetchImages() {
+    const searchOptions = new URLSearchParams(this.searchOptions);
+    const searchURL = `${BASE_URL}?key=${PIXABAY_API_KEY}&q=${this.searchingImages}&${searchOptions}&page=${this.page}`;
+    this.searchUrl = searchURL;
+
+    const request = await axios.get(searchURL);
+
+    if (request.status !== 200) {
+      console.log('Ups! Error!');
+      return;
+    }
+
+    const images = request.data.hits;
+
+    this.getTotalHits(request);
+    this.leftImages = this.countLeftImiges();
+    this.incrememntPage();
+
+    return images;
   }
 
   get searchString() {
@@ -48,12 +58,12 @@ export class ApiService {
     this.page += 1;
   }
 
-  resetPage() {
+  resetPageNumber() {
     this.page = 1;
   }
 
   getTotalHits(response) {
-    this.totalHits = response.totalHits;
+    this.totalHits = response.data.totalHits;
   }
 
   countLeftImiges() {
@@ -63,8 +73,6 @@ export class ApiService {
   }
 
   isNoItemsToLoadMore() {
-    return (
-      !this.totalHits || this.totalHits < this.imgPerPage || !this.leftImages
-    );
+    return !this.leftImages;
   }
 }

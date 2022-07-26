@@ -1,105 +1,88 @@
 import './sass/index.scss';
+
+import { searchOptions, lightboxOptions } from './js/options';
+import { ApiService } from './js/ApiService.js';
+import { message } from './js/messages.js';
+import { refs } from './js/refs.js';
+import { cardTemplate } from './js/cardTemplate.js';
+import { showInfoMessage } from './js/showInfoMessage.js';
+import { clearSearchForm } from './js/clearSearchForm.js';
+import { clearImagesContainer } from './js/clearImagesContainer.js';
+
+import InfiniteScroll from 'infinite-scroll';
+import debounce from 'lodash.debounce';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
-import notiflix from 'notiflix';
-import {ApiService} from './js/AapiService.js';
-import {NextButton} from './js/NextButton.js';
-import { cardTemplate } from './js/cardTemplate.js';
-import SimpleLightbox from 'simplelightbox';
 
-const searchOptions = {
-  image_type: 'photo',
-  orientation: 'horizontal',
-  per_page: 40,
-  safesearch: true,
-};
-
-const newFetch = new ApiService(searchOptions);
-
-const NO_RESULT_MESSAGE =
-  'Sorry, there are no images matching your search query. Please try again.';
-const NO_INPUT_MESSAGE = 'Ups! No data to search! Fill search string, please!';
-const END_OF_SEARCH_MESSAGE = `We're sorry, but you've reached the end of search results.`;
-
-const refs = {
-  searchForm: document.getElementById('search-form'),
-  galleryContainer: document.querySelector('.gallery__container'),
-};
-
-const nextBtn = new NextButton({ selector: '.load-more' });
-
+const images = new ApiService(searchOptions);
+const simpleLightbox = new SimpleLightbox('.gallery a', lightboxOptions);
 refs.searchForm.addEventListener('submit', onSubmit);
-nextBtn.refs.button.addEventListener('click', onNextBtnClick);
 
-const simpleLightbox = new SimpleLightbox('.gallery a');
-
-nextBtn.hide();
-
-function onSubmit(e) {
+async function onSubmit(e) {
   e.preventDefault();
 
-  newFetch.resetPage();
-  newFetch.searchString = refs.searchForm.elements.searchQuery.value;
-  refs.galleryContainer.innerHTML = '';
+  images.resetPageNumber();
+  images.searchString = refs.searchForm.elements.searchQuery.value.trim();
+  clearImagesContainer(refs);
 
-  if (!refs.searchForm.elements.searchQuery.value) {
-    showInfoMessage(NO_INPUT_MESSAGE);
+  if (!images.searchString) {
+    showInfoMessage(message.NO_INPUT);
+    clearSearchForm();
     return;
   }
 
-  newFetch
-    .fetchImages()
-    .then(items => {
-      if (!items.hits.length) {
-        showInfoMessage(NO_RESULT_MESSAGE);
-        return;
-      }
+  try {
+    const imagesSearchResult = await images.fetchImages();
 
-      refs.galleryContainer.innerHTML = createCardsMurkup(items.hits);
+    if (!imagesSearchResult.length) {
+      showInfoMessage(message.NO_RESULT);
+      clearSearchForm(refs);
+      return;
+    }
 
-      showInfoMessage(`Hooray! We found ${newFetch.totalHits} images.`);
+    renderCards(imagesSearchResult);
+    showInfoMessage(`Hooray! We found ${images.totalHits} images.`);
+    simpleLightbox.refresh();
 
-      simpleLightbox.refresh();
+    const infiniteScroll = new InfiniteScroll(refs.galleryContainer, {
+      path: function () {
+        return images.searchUrl;
+      },
+      responseBody: 'json',
+      status: '.scroll-status',
+      history: false,
+    });
+    infiniteScroll.on('load', debounce(onScroll, 200));
 
-      nextBtn.enable();
+    if (images.isNoItemsToLoadMore()) {
+      showInfoMessage(message.END_OF_SEARCH);
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
 
-      if (newFetch.isNoItemsToLoadMore()) {
-        nextBtn.hide();
-        showInfoMessage(END_OF_SEARCH_MESSAGE);
-      }
-    })
-    .catch(error => console.log(error));
-
-  refs.searchForm.reset();
+  clearSearchForm(refs);
 }
-
-function onNextBtnClick(e) {
-  nextBtn.disable();
-
-  newFetch
-    .fetchImages()
-    .then(items => {
-      refs.galleryContainer.insertAdjacentHTML(
-        'beforeend',
-        createCardsMurkup(items.hits)
-      );
-
-      nextBtn.enable();
-
-      if (newFetch.isNoItemsToLoadMore()) {
-        nextBtn.hide();
-        showInfoMessage(END_OF_SEARCH_MESSAGE);
-      }
-
-      simpleLightbox.refresh();
-    })
-    .catch(error => console.log(error));
+function createCardsMurkup(data) {
+  return data.map(cardTemplate).join('');
 }
-
-function createCardsMurkup(cards) {
-  return cards.map(cardTemplate).join('');
+function renderCards(cards) {
+  refs.galleryContainer.insertAdjacentHTML(
+    'beforeend',
+    createCardsMurkup(cards)
+  );
 }
+async function onScroll() {
+  try {
+    const imagesSearchResult = await images.fetchImages();
+    renderCards(imagesSearchResult);
 
-function showInfoMessage(message) {
-  notiflix.Notify.info(message);
+    if (images.isNoItemsToLoadMore()) {
+      showInfoMessage(message.END_OF_SEARCH);
+    }
+
+    simpleLightbox.refresh();
+  } catch (error) {
+    console.log(error.message);
+  }
 }

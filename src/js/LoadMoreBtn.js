@@ -1,4 +1,4 @@
-export  class NextButton {
+export  class LoadMoreBtn {
   constructor({ selector, hidden = false }) {
     this.refs = this.getRefs(selector);
 
